@@ -92,14 +92,11 @@ export default {
 
   computed: {
     ...mapGetters([
+      'entityTypes'
     ]),
 
-    entries () {
-      return this.$store.state.entityTypes.entityTypes
-    },
-
     customEntityTypes () {
-      return this.entries.filter(e => !this.builtin.includes(e.name))
+      return this.entityTypes.filter(e => !this.builtin.includes(e.name))
     },
 
     deleteText () {

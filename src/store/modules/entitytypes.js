@@ -7,7 +7,7 @@ import {
   EDIT_ENTITY_TYPE_END,
   DELETE_ENTITY_TYPE_END,
 
-  RESET_ALL_ENTITY_TYPES
+  RESET_ALL
 } from '../mutation-types'
 import { sortByName } from '../../lib/sorting'
 
@@ -40,8 +40,11 @@ const actions = {
     return entityTypesApi.getEntityTypes()
       .then(entityTypes => {
         commit(LOAD_ENTITY_TYPES_END, entityTypes)
-        state.entityTypes = entityTypes
-        return Promise.resolve(entityTypes)
+        Promise.resolve(entityTypes)
+      })
+      .catch(err => {
+        console.error(err)
+        Promise.reject(err)
       })
   },
 
@@ -121,7 +124,7 @@ const mutations = {
     state.entityTypeMap.delete(entityTypeToDelete.id)
   },
 
-  [RESET_ALL_ENTITY_TYPES] (state) {
+  [RESET_ALL] (state) {
     Object.assign(state, { ...initialState })
   }
 }
