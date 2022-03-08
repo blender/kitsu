@@ -13,7 +13,19 @@ import { sortByName } from '../../lib/sorting'
 
 const initialState = {
   entityTypes: [],
-  entityTypeMap: new Map()
+  entityTypeMap: new Map(),
+  // Entity types that Kitsu ships with, these should not be edited.
+  builtinEntityTypeNames: [
+    'Characters',
+    'Edit',
+    'Environment',
+    'Episode',
+    'FX',
+    'Props',
+    'Scene',
+    'Sequence',
+    'Shot'
+  ]
 }
 
 const state = { ...initialState }
@@ -22,15 +34,19 @@ const getters = {
   entityTypes: state => state.entityTypes,
   entityTypeMap: state => state.entityTypeMap,
 
+  customEntityTypes: state => state.entityTypes.filter(
+    e => !state.builtinEntityTypeNames.includes(e.name)
+  ),
+
+  customEntityTypeOptions: (state, getters) => getters.customEntityTypes.map(
+    (type) => { return { label: type.name, value: type.name } }
+  ),
+
   getEntityType: (state, getters) => (id) => {
     return state.entityTypes.find(
       (entityType) => entityType.id === id
     )
-  },
-
-  getEntityTypeOptions: state => state.entityTypes.map(
-    (type) => { return { label: type.name, value: type.id } }
-  )
+  }
 }
 
 const actions = {

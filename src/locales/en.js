@@ -51,8 +51,6 @@ export default {
 
   entity_types: {
     create_error: 'An error occurred while saving this entity type. Are you sure there is no entity type with similar name?',
-    delete_text: 'Are you sure you want to remove {name} from your database?',
-    delete_error: 'An error occurred while deleting this entity type. There are probably data linked to it. Are you sure this entity type has no entity linked to it?',
     edit_title: 'Edit entity type',
     number: 'entity type | entity types',
     fields: {
@@ -61,8 +59,9 @@ export default {
   },
 
   custom_entity_types: {
-    number: 'custom entity type | custom entity types',
     new_entity_type: 'Add a custom entity type',
+    delete_text: 'Are you sure you want to remove {name} from your database?',
+    delete_error: 'An error occurred while deleting this custom entity type. There are probably data linked to it. Are you sure this entity type has no entities linked to it?',
     title: 'Custom Entity Types'
   },
 

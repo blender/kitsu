@@ -58,18 +58,6 @@ export default {
 
   data () {
     return {
-      // Entity types that Kitsu ships with, these should not be edited.
-      builtin: [
-        'Characters',
-        'Edit',
-        'Environment',
-        'Episode',
-        'FX',
-        'Props',
-        'Scene',
-        'Sequence',
-        'Shot'
-      ],
       entityTypeToDelete: null,
       entityTypeToEdit: {},
       choices: [],
@@ -92,12 +80,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      'entityTypes'
+      'customEntityTypes'
     ]),
-
-    customEntityTypes () {
-      return this.entityTypes.filter(e => !this.builtin.includes(e.name))
-    },
 
     deleteText () {
       const entityType = this.entityTypeToDelete
