@@ -720,6 +720,8 @@ export default {
     notifications_slack_user: 'Slack member ID',
     notifications_mattermost_enabled: 'Mattermost notifications enabled',
     notifications_mattermost_user: 'Mattermost username',
+    notifications_discord_enabled: 'Discord notifications enabled',
+    notifications_discord_user: 'Discord username',
     password_title: 'Change password',
     timezone: 'Timezone',
     title: 'Your Profile',
@@ -753,6 +755,7 @@ export default {
       hours_by_day: 'Hours by day',
       slack_token: 'Slack Token (Optional)',
       mattermost_webhook: 'Mattermost Webhook (Optional)',
+      discord_token: 'Discord Token (Optional)',
       timesheets_locked: 'Lock artist timesheets older than 1 week',
       use_original_name: 'Use original file name for downloads',
       show_hd_default: 'Show picture with HD quality by default'
@@ -1041,6 +1044,7 @@ export default {
       seconds: 'Seconds',
       sequence: 'Sequence',
       start_date: 'Start date',
+      start_date_short: 'Start',
       task_status: 'Status',
       task_status_short_name: 'Status',
       task_type: 'Type'
