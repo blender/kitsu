@@ -24,6 +24,7 @@ import Edits from '../components/pages/Edits'
 const AssetTypes = () => import('../components/pages/AssetTypes')
 const Asset = () => import('../components/pages/Asset')
 const Breakdown = () => import('../components/pages/Breakdown')
+const EntityTypes = () => import('../components/pages/CustomEntityTypes')
 const CustomActions = () => import('../components/pages/CustomActions')
 const Episodes = () => import('../components/pages/Episodes')
 const MainSchedule = () => import('../components/pages/MainSchedule')
@@ -174,6 +175,24 @@ export const routes = [
             name: 'delete-asset-type',
             path: 'delete/:asset_type_id',
             component: AssetTypes
+          }
+        ]
+      },
+
+      {
+        path: 'entity-types',
+        component: EntityTypes,
+        children: [
+          { path: 'new', component: EntityTypes },
+          {
+            name: 'edit-entity-type',
+            path: 'edit/:entity_type_id',
+            component: EntityTypes
+          },
+          {
+            name: 'delete-entity-type',
+            path: 'delete/:entity_type_id',
+            component: EntityTypes
           }
         ]
       },

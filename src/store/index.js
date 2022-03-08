@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import * as getters from './getters'
 
 import assetTypes from './modules/assettypes'
+import entityTypes from './modules/entitytypes'
 import assets from './modules/assets'
 import breakdown from './modules/breakdown'
 import customActions from './modules/customactions'
@@ -27,6 +28,7 @@ Vue.use(Vuex)
 
 const modules = {
   assetTypes,
+  entityTypes,
   assets,
   breakdown,
   customActions,

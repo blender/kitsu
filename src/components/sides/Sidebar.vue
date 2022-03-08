@@ -98,6 +98,12 @@
              </router-link>
            </p>
            <p @click="toggleSidebar()">
+             <router-link to="/entity-types">
+               <box-icon size="0.9x" />
+               {{ $t("custom_entity_types.title") }}
+             </router-link>
+           </p>
+           <p @click="toggleSidebar()">
              <router-link :to="{name: 'custom-actions'}">
                <git-pull-request-icon size="0.9x" />
                {{ $t("custom_actions.title") }}
