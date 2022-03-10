@@ -191,36 +191,32 @@ const getters = {
   },
 
   productionAssetTaskTypeIds: (state, getters) => {
-    return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Asset')
-      .map(taskType => taskType.id)
+    return getters.productionAssetTaskTypes.map(taskType => taskType.id)
   },
 
   productionShotTaskTypeIds: (state, getters) => {
-    return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Shot')
-      .map(taskType => taskType.id)
+    return getters.productionShotTaskTypes.map(taskType => taskType.id)
   },
 
   productionEditTaskTypeIds: (state, getters) => {
+    return getters.productionEditTaskTypes.map(taskType => taskType.id)
+  },
+
+  productionTaskTypesForEntityType: (state, getters) => (entityType) => {
     return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Edit')
-      .map(taskType => taskType.id)
+      .filter(taskType => taskType.for_entity === entityType)
   },
 
   productionAssetTaskTypes: (state, getters) => {
-    return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Asset')
+    return getters.productionTaskTypesForEntityType('Asset')
   },
 
   productionShotTaskTypes: (state, getters) => {
-    return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Shot')
+    return getters.productionTaskTypesForEntityType('Shot')
   },
 
   productionEditTaskTypes: (state, getters) => {
-    return getters.productionTaskTypes
-      .filter(taskType => taskType.for_entity === 'Edit')
+    return getters.productionTaskTypesForEntityType('Edit')
   },
 
   currentProduction: (state) => {

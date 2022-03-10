@@ -31,11 +31,12 @@
       </div>
 
       <template
-        v-for="(taskListObject, index) in [assetTaskTypes, shotTaskTypes, editTaskTypes]"
+        v-for="(taskListObject, index) in taskTypesPerEntityType"
         v-else
       >
         <div
           :key="index"
+          v-if="!isEmpty(taskListObject.list)"
         >
           <h2 class="section-title">
             {{ taskListObject.title }}
@@ -118,11 +119,11 @@ export default {
 
   data () {
     return {
-      assetTaskTypes: { list: [] },
-      editTaskTypes: { list: [] },
+      entityTypeNames: [],
+      taskTypesPerEntityType: [],
       episode_span: 0,
-      shotTaskTypes: { list: [] },
       taskTypeId: '',
+      taskTypeEntityType: '',
       loading: {
         episode_span: false,
         scheduleTimeUpdate: false,
@@ -137,16 +138,20 @@ export default {
   },
 
   mounted () {
-    if (this.remainingTaskTypes.length > 0) {
-      this.taskTypeId = this.remainingTaskTypes[0].id
-    }
+    this.setNextRemainingTaskType()
 
-    this.resetDisplayedTaskTypes()
+    // this.resetDisplayedTaskTypes()
     if (this.currentProduction) {
       this.episode_span = this.currentProduction.episode_span
-      this.loadAllScheduleItems(this.currentProduction)
+      this.loadEntityTypes()
         .then(() => {
-          this.resetDisplayedTaskTypes()
+          this.loadAllScheduleItems(this.currentProduction)
+            .then(() => {
+              this.resetDisplayedTaskTypes()
+            })
+        })
+        .catch((err) => {
+          console.error(err)
         })
     }
   },
@@ -155,10 +160,10 @@ export default {
     ...mapGetters([
       'currentProduction',
       'currentScheduleItems',
+      'customEntityTypeNames',
+      'getEntityTypeTitle',
       'productionTaskTypes',
-      'productionAssetTaskTypes',
-      'productionShotTaskTypes',
-      'productionEditTaskTypes',
+      'productionTaskTypesForEntityType',
       'taskStatusMap',
       'taskTypeMap',
       'taskTypes',
@@ -182,6 +187,7 @@ export default {
       'editTaskTypeLink',
       'loadAllScheduleItems',
       'loadContext',
+      'loadEntityTypes',
       'removeTaskTypeFromProduction',
       'saveScheduleItem'
     ]),
@@ -191,9 +197,10 @@ export default {
     },
 
     resetDisplayedTaskTypes () {
-      this.resetAssetTaskTypes()
-      this.resetShotTaskTypes()
-      this.resetEditTaskTypes()
+      this.entityTypeNames = ['Asset', 'Shot', 'Edit'].concat(this.customEntityTypeNames)
+      this.taskTypesPerEntityType = this.entityTypeNames.map((entityType) => {
+        return this.resetEntityTaskTypes(entityType)
+      })
     },
 
     getScheduleItemForTaskType (taskType) {
@@ -206,11 +213,19 @@ export default {
       return item
     },
 
+    getLastPriority (entityType) {
+      const taskListObjects = this.taskTypesPerEntityType.filter((taskListObject) => taskListObject.entityType === entityType)
+      if (taskListObjects.length === 0) {
+        return 1
+      }
+      return taskListObjects[0].list.length
+    },
+
     async addTaskType () {
       await this.addTaskTypeToProduction(
         {
           taskTypeId: this.taskTypeId,
-          priority: this.assetTaskTypes.length
+          priority: this.getLastPriority(this.taskTypeEntityType) + 1
         }
       )
       await this.createScheduleItem(
@@ -221,11 +236,7 @@ export default {
           task_type_id: this.taskTypeId
         }
       )
-      if (this.remainingTaskTypes.length > 0) {
-        this.taskTypeId = this.remainingTaskTypes[0].id
-      } else {
-        this.taskTypeId = ''
-      }
+      this.setNextRemainingTaskType()
       this.resetDisplayedTaskTypes()
     },
 
@@ -244,70 +255,42 @@ export default {
         return
       }
       await this.$nextTick()
+      this.setNextRemainingTaskType()
+      this.resetDisplayedTaskTypes()
+    },
+
+    setNextRemainingTaskType () {
       if (this.remainingTaskTypes.length > 0) {
         this.taskTypeId = this.remainingTaskTypes[0].id
+        this.taskTypeEntityType = this.remainingTaskTypes[0].for_entity
+      } else {
+        this.taskTypeId = ''
+        this.taskTypeEntityType = ''
       }
-      this.resetDisplayedTaskTypes()
     },
 
     /*
       Return an object with the following structure:
       {
-        title: 'title of the first column of the tab (Assets or short)',
+        title: 'title of the section of task types, e.g. "Assets"',
+        entityType: 'entity type, e.g. "Asset"',
         list:  [{taskTypes, scheduleItem}]
         // A list of objects that represents a couple of taskType and their
         linked scheduleItem.
       }
     */
-    resetAssetTaskTypes () {
+    resetEntityTaskTypes (entityType) {
       const list = sortTaskTypes(
-        [...this.productionAssetTaskTypes], this.currentProduction
+        [...this.productionTaskTypesForEntityType(entityType)], this.currentProduction
       ).map(taskType => {
         return {
           taskType,
           scheduleItem: this.getScheduleItemForTaskType(taskType)
         }
       })
-      this.assetTaskTypes = {
-        title: this.$t('assets.title'),
-        list
-      }
-    },
-
-    /*
-      Return an object with the following structure:
-      {
-        title: 'title of the first column of the tab (Assets or short)',
-        list:  [{taskTypes, scheduleItem}]
-        // A list of objects that represents a couple of taskType and their
-        linked scheduleItem }
-    */
-    resetShotTaskTypes () {
-      const list = sortTaskTypes(
-        [...this.productionShotTaskTypes], this.currentProduction
-      ).map(taskType => {
-        return {
-          taskType,
-          scheduleItem: this.getScheduleItemForTaskType(taskType)
-        }
-      })
-      this.shotTaskTypes = {
-        title: this.$t('shots.title'),
-        list
-      }
-    },
-
-    resetEditTaskTypes () {
-      const list = sortTaskTypes(
-        [...this.productionEditTaskTypes], this.currentProduction
-      ).map(taskType => {
-        return {
-          taskType,
-          scheduleItem: this.getScheduleItemForTaskType(taskType)
-        }
-      })
-      this.editTaskTypes = {
-        title: this.$t('edits.title'),
+      return {
+        title: this.getEntityTypeTitle(entityType),
+        entityType,
         list
       }
     },

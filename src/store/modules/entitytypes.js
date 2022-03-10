@@ -9,6 +9,7 @@ import {
 
   RESET_ALL
 } from '../mutation-types'
+import i18n from '../../lib/i18n'
 import { sortByName } from '../../lib/sorting'
 
 const initialState = {
@@ -50,6 +51,11 @@ const getters = {
     return state.entityTypes.find(
       (entityType) => entityType.id === id
     )
+  },
+
+  getEntityTypeTitle: state => (entityType) => {
+    const titleKey = `${entityType.toLowerCase()}s.title`
+    return i18n.te(titleKey) ? i18n.t(titleKey) : entityType
   }
 }
 

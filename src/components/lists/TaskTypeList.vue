@@ -20,7 +20,7 @@
         draggable=".tasktype-item"
         tag="tbody"
         :sort="true"
-        :key="item.entityTypeName"
+        :key="item.entityType"
         v-for="item in taskTypesPerEntityType"
         v-if="item.taskTypes.length > 0"
         @end="updatePriority"
@@ -106,6 +106,7 @@ export default {
   computed: {
     ...mapGetters([
       'customEntityTypeNames',
+      'getEntityTypeTitle',
       'getDepartments'
     ])
   },
@@ -116,11 +117,6 @@ export default {
 
     getTaskTypesForEntityType (entityType) {
       return this.entries.filter(taskType => taskType.for_entity === entityType)
-    },
-
-    getTitle (entityType) {
-      const titleKey = `${entityType.toLowerCase()}s.title`
-      return this.$te(titleKey) ? this.$t(titleKey) : entityType
     },
 
     updatePriority (event) {
@@ -151,11 +147,11 @@ export default {
       handler () {
         setTimeout(() => {
           this.entityTypeNames = ['Asset', 'Shot', 'Edit'].concat(this.customEntityTypeNames)
-          this.taskTypesPerEntityType = this.entityTypeNames.map((entityTypeName) => {
-            const taskTypes = this.getTaskTypesForEntityType(entityTypeName)
-            const title = this.getTitle(entityTypeName)
+          this.taskTypesPerEntityType = this.entityTypeNames.map((entityType) => {
+            const taskTypes = this.getTaskTypesForEntityType(entityType)
+            const title = this.getEntityTypeTitle(entityType)
             return {
-              entityTypeName,
+              entityType,
               taskTypes,
               title,
               priorityItems: JSON.parse(JSON.stringify(taskTypes))
