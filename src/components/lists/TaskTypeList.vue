@@ -16,19 +16,20 @@
       </thead>
       <draggable
         class="datatable-body"
-        v-model="items"
+        v-model="item.priorityItems"
         draggable=".tasktype-item"
         tag="tbody"
         :sort="true"
         :key="item.entityTypeName"
-        v-for="item in items"
+        v-for="item in taskTypesPerEntityType"
         v-if="item.taskTypes.length > 0"
-        @end="updatePriorityAssets"
+        @end="updatePriority"
       >
         <tr class="datatable-type-header" slot="header">
           <th scope="rowgroup" colspan="4">
             <span class="datatable-row-header">
-              {{ $t(`${item.entityTypeName.toLowerCase()}s.title`) || sdfsd }}
+              <!-- TODO(anna): figure out how to make readable titles for custom entity types -->
+              {{ $t(`${item.entityTypeName.toLowerCase()}s.title`) }}
             </span>
           </th>
         </tr>
@@ -88,13 +89,8 @@ export default {
 
   data () {
     return {
-      entityTypeNames: [
-        'Asset', 'Shot', 'Edit'
-      ],
-      items: {},
-      assetsItems: [],
-      shotsItems: [],
-      editsItems: []
+      entityTypeNames: [],
+      taskTypesPerEntityType: {}
     }
   },
 
@@ -112,30 +108,20 @@ export default {
     ...mapGetters([
       'customEntityTypeNames',
       'getDepartments'
-    ]),
-
-    assetTaskTypes () {
-      return this.getTaskTypesForEntity('Asset')
-    },
-
-    shotTaskTypes () {
-      return this.getTaskTypesForEntity('Shot')
-    },
-
-    editTaskTypes () {
-      return this.getTaskTypesForEntity('Edit')
-    }
+    ])
   },
 
   methods: {
     ...mapActions([
     ]),
 
-    getTaskTypesForEntity (entity) {
-      return this.entries.filter(taskType => taskType.for_entity === entity)
+    getTaskTypesForEntityType (entityType) {
+      return this.entries.filter(taskType => taskType.for_entity === entityType)
     },
 
-    updatePriority (items) {
+    updatePriority (event) {
+      const vnode = event.target.__vue__.$vnode
+      const items = vnode.data.model.value
       const forms = []
       items.forEach((item, index) => {
         index += 1
@@ -150,18 +136,6 @@ export default {
       this.$emit('update-priorities', forms)
     },
 
-    updatePriorityAssets () {
-      this.updatePriority(this.assetsItems)
-    },
-
-    updatePriorityShots () {
-      this.updatePriority(this.shotsItems)
-    },
-
-    updatePriorityEdits () {
-      this.updatePriority(this.editsItems)
-    },
-
     isEmpty (value) {
       return value === undefined || value === null || value === ''
     }
@@ -173,16 +147,14 @@ export default {
       handler () {
         setTimeout(() => {
           this.entityTypeNames = ['Asset', 'Shot', 'Edit'].concat(this.customEntityTypeNames)
-          this.items = this.entityTypeNames.map((entityTypeName) => {
+          this.taskTypesPerEntityType = this.entityTypeNames.map((entityTypeName) => {
+            const taskTypes = this.getTaskTypesForEntityType(entityTypeName)
             return {
               entityTypeName,
-              taskTypes: this.getTaskTypesForEntity(entityTypeName)
+              taskTypes,
+              priorityItems: JSON.parse(JSON.stringify(taskTypes))
             }
           })
-          console.log(this.items)
-          this.assetsItems = JSON.parse(JSON.stringify(this.assetTaskTypes))
-          this.shotsItems = JSON.parse(JSON.stringify(this.shotTaskTypes))
-          this.editsItems = JSON.parse(JSON.stringify(this.editTaskTypes))
         }, 100)
       }
     }
