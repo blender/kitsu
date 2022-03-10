@@ -28,8 +28,7 @@
         <tr class="datatable-type-header" slot="header">
           <th scope="rowgroup" colspan="4">
             <span class="datatable-row-header">
-              <!-- TODO(anna): figure out how to make readable titles for custom entity types -->
-              {{ $t(`${item.entityTypeName.toLowerCase()}s.title`) }}
+              {{ item.title }}
             </span>
           </th>
         </tr>
@@ -119,6 +118,11 @@ export default {
       return this.entries.filter(taskType => taskType.for_entity === entityType)
     },
 
+    getTitle (entityType) {
+      const titleKey = `${entityType.toLowerCase()}s.title`
+      return this.$te(titleKey) ? this.$t(titleKey) : entityType
+    },
+
     updatePriority (event) {
       const vnode = event.target.__vue__.$vnode
       const items = vnode.data.model.value
@@ -149,9 +153,11 @@ export default {
           this.entityTypeNames = ['Asset', 'Shot', 'Edit'].concat(this.customEntityTypeNames)
           this.taskTypesPerEntityType = this.entityTypeNames.map((entityTypeName) => {
             const taskTypes = this.getTaskTypesForEntityType(entityTypeName)
+            const title = this.getTitle(entityTypeName)
             return {
               entityTypeName,
               taskTypes,
+              title,
               priorityItems: JSON.parse(JSON.stringify(taskTypes))
             }
           })
