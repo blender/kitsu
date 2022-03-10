@@ -16,95 +16,26 @@
       </thead>
       <draggable
         class="datatable-body"
-        v-model="assetsItems"
+        v-model="items"
         draggable=".tasktype-item"
         tag="tbody"
         :sort="true"
+        :key="item.entityTypeName"
+        v-for="item in items"
+        v-if="item.taskTypes.length > 0"
         @end="updatePriorityAssets"
       >
         <tr class="datatable-type-header" slot="header">
           <th scope="rowgroup" colspan="4">
             <span class="datatable-row-header">
-              {{ $t('assets.title') }}
+              {{ $t(`${item.entityTypeName.toLowerCase()}s.title`) || sdfsd }}
             </span>
           </th>
         </tr>
         <tr
           class="datatable-row tasktype-item"
           :key="taskType.id"
-          v-for="taskType in assetsItems"
-        >
-          <td class="department">
-            <department-name
-              :department="getDepartments(taskType.department_id)"
-              v-if="!isEmpty(taskType.department_id)"
-            />
-          </td>
-          <task-type-cell class="name" :task-type="taskType" />
-          <td class="allow-timelog">
-            {{ taskType.allow_timelog ? $t('main.yes') : $t('main.no')}}
-          </td>
-          <row-actions-cell
-            :taskType-id="taskType.id"
-            @delete-clicked="$emit('delete-clicked', taskType)"
-            @edit-clicked="$emit('edit-clicked', taskType)"
-          />
-        </tr>
-      </draggable>
-      <draggable
-        class="datatable-body"
-        v-model="shotsItems"
-        draggable=".tasktype-item"
-        tag="tbody"
-        :sort="true"
-        @end="updatePriorityShots"
-      >
-        <tr class="datatable-type-header" slot="header">
-          <th scope="rowgroup" colspan="4">
-            <span class="datatable-row-header">
-              {{ $t('shots.title') }}
-            </span>
-          </th>
-        </tr>
-        <tr
-          class="datatable-row tasktype-item"
-          v-for="taskType in shotsItems" :key="taskType.id"
-        >
-          <td class="department">
-            <department-name
-              :department="getDepartments(taskType.department_id)"
-              v-if="!isEmpty(taskType.department_id)"
-            />
-          </td>
-          <task-type-cell class="name" :task-type="taskType" />
-          <td class="allow-timelog">
-            {{ taskType.allow_timelog ? $t('main.yes') : $t('main.no')}}
-          </td>
-          <row-actions-cell
-            :taskType-id="taskType.id"
-            @delete-clicked="$emit('delete-clicked', taskType)"
-            @edit-clicked="$emit('edit-clicked', taskType)"
-          />
-        </tr>
-      </draggable>
-      <draggable
-        class="datatable-body"
-        v-model="editsItems"
-        draggable=".tasktype-item"
-        tag="tbody"
-        :sort="true"
-        @end="updatePriorityEdits"
-      >
-        <tr class="datatable-type-header" slot="header">
-          <th scope="rowgroup" colspan="4">
-            <span class="datatable-row-header">
-              {{ $t('edits.title') }}
-            </span>
-          </th>
-        </tr>
-        <tr
-          class="datatable-row tasktype-item"
-          v-for="taskType in editsItems" :key="taskType.id"
+          v-for="taskType in item.taskTypes"
         >
           <td class="department">
             <department-name
@@ -157,6 +88,10 @@ export default {
 
   data () {
     return {
+      entityTypeNames: [
+        'Asset', 'Shot', 'Edit'
+      ],
+      items: {},
       assetsItems: [],
       shotsItems: [],
       editsItems: []
@@ -175,6 +110,7 @@ export default {
 
   computed: {
     ...mapGetters([
+      'customEntityTypeNames',
       'getDepartments'
     ]),
 
@@ -236,6 +172,14 @@ export default {
       immediate: true,
       handler () {
         setTimeout(() => {
+          this.entityTypeNames = ['Asset', 'Shot', 'Edit'].concat(this.customEntityTypeNames)
+          this.items = this.entityTypeNames.map((entityTypeName) => {
+            return {
+              entityTypeName,
+              taskTypes: this.getTaskTypesForEntity(entityTypeName)
+            }
+          })
+          console.log(this.items)
           this.assetsItems = JSON.parse(JSON.stringify(this.assetTaskTypes))
           this.shotsItems = JSON.parse(JSON.stringify(this.shotTaskTypes))
           this.editsItems = JSON.parse(JSON.stringify(this.editTaskTypes))

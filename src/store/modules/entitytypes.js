@@ -38,6 +38,10 @@ const getters = {
     e => !state.builtinEntityTypeNames.includes(e.name)
   ),
 
+  customEntityTypeNames: (state, getters) => getters.customEntityTypes.map(
+    (type) => { return type.name }
+  ),
+
   customEntityTypeOptions: (state, getters) => getters.customEntityTypes.map(
     (type) => { return { label: type.name, value: type.name } }
   ),

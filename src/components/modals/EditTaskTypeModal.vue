@@ -115,23 +115,27 @@ export default {
         for_entity: 'Asset',
         allow_timelog: 'false',
         department_id: null
-      },
-      dedicatedToOptions: [
-        { label: this.$t('assets.title'), value: 'Asset' },
-        { label: this.$t('shots.title'), value: 'Shot' },
-        { label: this.$t('edits.title'), value: 'Edit' }
-      ]
+      }
     }
   },
 
   computed: {
     ...mapGetters([
+      'customEntityTypeOptions',
       'taskTypes',
       'taskTypeStatusOptions',
       'departments'
     ]),
     isEditing () {
       return this.taskTypeToEdit && this.taskTypeToEdit.id
+    },
+    dedicatedToOptions () {
+      const options = [
+        { label: this.$t('assets.title'), value: 'Asset' },
+        { label: this.$t('shots.title'), value: 'Shot' },
+        { label: this.$t('edits.title'), value: 'Edit' }
+      ]
+      return options.concat(this.customEntityTypeOptions)
     }
   },
 

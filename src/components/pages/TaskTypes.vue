@@ -9,7 +9,7 @@
 
     <task-type-list
       :entries="taskTypes"
-      :is-loading="loading.taskTypes || loading.departments"
+      :is-loading="loading.taskTypes || loading.departments || loading.entityTypes"
       :is-error="errors.taskTypes || errors.departments"
       @update-priorities="updatePriorities"
       @edit-clicked="onEditClicked"
@@ -61,12 +61,14 @@ export default {
     return {
       errors: {
         taskTypes: false,
+        entityTypes: false,
         departments: false,
         edit: false,
         del: false
       },
       loading: {
         taskTypes: false,
+        entityTypes: false,
         departments: false,
         edit: false,
         del: false
@@ -92,6 +94,8 @@ export default {
     this.errors.taskTypes = false
     this.loading.departments = true
     this.errors.departments = false
+    this.loading.entityTypes = true
+    this.errors.entityTypes = false
     this.loadDepartments()
       .then(() => {
         this.loading.departments = false
@@ -110,6 +114,15 @@ export default {
         this.loading.taskTypes = false
         this.errors.taskTypes = true
       })
+    this.loadEntityTypes()
+      .then(() => {
+        this.loading.entityTypes = false
+      })
+      .catch((err) => {
+        console.error(err)
+        this.loading.entityTypes = false
+        this.errors.entityTypes = true
+      })
   },
 
   methods: {
@@ -117,6 +130,7 @@ export default {
       'editTaskType',
       'deleteTaskType',
       'loadTaskTypes',
+      'loadEntityTypes',
       'loadDepartments'
     ]),
 
