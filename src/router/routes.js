@@ -20,6 +20,7 @@ import Shots from '../components/pages/Shots'
 import TaskType from '../components/pages/TaskType'
 import Todos from '../components/pages/Todos'
 import Edits from '../components/pages/Edits'
+import CustomEntities from '../components/pages/CustomEntities'
 
 const AssetTypes = () => import('../components/pages/AssetTypes')
 const Asset = () => import('../components/pages/Asset')
@@ -53,6 +54,7 @@ const TaskTypes = () => import('../components/pages/TaskTypes')
 const Departements = () => import('../components/pages/departments/Departments')
 const WrongBrowser = () => import('../components/pages/WrongBrowser')
 const Edit = () => import('../components/pages/Edit')
+const CustomEntity = () => import('../components/pages/CustomEntity')
 
 const ADMIN_PAGES = [
   'asset-types',
@@ -1007,6 +1009,41 @@ export const routes = [
             component: Task
           }
         ]
+      },
+
+      /* TODO(anna): Routing for custom entity types */
+      {
+        path: 'productions/:production_id/:entity_type',
+        component: CustomEntities,
+        name: 'custom-entities',
+        children: [
+          {
+            path: 'delete-all-tasks/:task_type_id',
+            component: CustomEntities,
+            name: 'delete-all-custom-entity-tasks'
+          },
+          {
+            path: 'edit/:entity_id',
+            component: CustomEntities,
+            name: 'edit-entity'
+          },
+          {
+            path: 'delete/:edit_id',
+            component: CustomEntities,
+            name: 'delete-entity'
+          },
+          {
+            path: 'restore/:edit_id',
+            component: CustomEntities,
+            name: 'restore-entity'
+          }
+        ]
+      },
+
+      {
+        path: 'productions/:production_id/:entity_type/:edit_id',
+        component: CustomEntity,
+        name: 'custom-entity'
       }
     ]
   },

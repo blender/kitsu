@@ -53,8 +53,17 @@ const getters = {
     )
   },
 
+  getEntityTypeByName: (state, getters) => (name) => {
+    return state.entityTypes.find(
+      (entityType) => entityType.name === name
+    )
+  },
+
   getEntityTypeTitle: state => (entityType) => {
     const titleKey = `${entityType.toLowerCase()}s.title`
+    // TODO(anna): it's best to have a "name_plural" and "slug" for each EntityType
+    // instead of using a lowercased name in URLs and section title
+    // This requires a DB migration in Zou.
     return i18n.te(titleKey) ? i18n.t(titleKey) : entityType
   }
 }

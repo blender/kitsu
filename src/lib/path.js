@@ -80,19 +80,24 @@ export const getEntityPath = (entityId, productionId, section, episodeId) => {
   return route
 }
 
-const getProductionRoute = (name, productionId) => {
+const getProductionRoute = (name, productionId, params, query) => {
+  console.log('getProductionRoute', name, productionId)
   return {
     name: name,
     params: {
-      production_id: productionId
+      production_id: productionId,
+      ...params
+    },
+    query: {
+      ...query
     }
   }
 }
 
-export const getProductionPath = (production, section = 'assets', episodeId) => {
+export const getProductionPath = (production, section = 'assets', episodeId, params, query) => {
   if (section === 'assetTypes') section = 'production-asset-types'
   if (section === 'newsFeed') section = 'news-feed'
-  let route = getProductionRoute(section, production.id)
+  let route = getProductionRoute(section, production.id, params, query)
   if (production.production_type === 'tvshow' && ![
     'news-feed', 'schedule', 'production-settings', 'quota', 'team', 'episodes'
   ].includes(section)) {
@@ -103,6 +108,7 @@ export const getProductionPath = (production, section = 'assets', episodeId) => 
     route.query = { search: '' }
   }
 
+  console.log('getProductionPath', section, episodeId, route, params, query)
   return route
 }
 

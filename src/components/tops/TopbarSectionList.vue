@@ -111,10 +111,13 @@ export default {
     },
 
     getSectionPath (section) {
+      console.log('getSectionPath', section)
       return getProductionPath(
         this.currentProduction,
         section.value,
-        this.episodeId
+        this.episodeId,
+        section.params,
+        section.query
       )
     }
   },

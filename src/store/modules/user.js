@@ -67,6 +67,7 @@ import {
   LOAD_ASSET_TYPES_END,
   SET_NOTIFICATION_COUNT,
   LOAD_OPEN_PRODUCTIONS_END,
+  LOAD_ENTITY_TYPES_END,
 
   RESET_ALL, SET_CURRENT_PRODUCTION
 } from '../mutation-types'
@@ -307,6 +308,7 @@ const actions = {
           commit(SET_CURRENT_PRODUCTION, rootGetters.currentProduction.id)
         }
         commit(LOAD_TASK_TYPES_END, context.task_types)
+        commit(LOAD_ENTITY_TYPES_END, context.entity_types)
       })
   }
 }

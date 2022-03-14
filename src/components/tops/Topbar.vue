@@ -253,8 +253,10 @@ export default {
       'assetsPath',
       'currentEpisode',
       'currentProduction',
+      'customEntityTypeNames',
       'episodes',
       'episodeOptions',
+      'getEntityTypeTitle',
       'isCurrentUserArtist',
       'isCurrentUserAdmin',
       'isCurrentUserClient',
@@ -270,6 +272,7 @@ export default {
       'openProductionOptions',
       'productionMap',
       'productionEditTaskTypes',
+      'productionTaskTypesForEntityType',
       'user'
     ]),
 
@@ -358,6 +361,24 @@ export default {
           { label: this.$t('edits.title'), value: 'edits' }
         ])
       }
+
+      // Add menu items for custom entity types having task types within this production.
+      // (similar to Edit menu item above)
+      const customOptions = this.customEntityTypeNames.map((entityType) => {
+        const taskTypes = this.productionTaskTypesForEntityType(entityType)
+        console.log(entityType, taskTypes.length, this.getEntityTypeTitle(entityType))
+        if (taskTypes.length > 0) {
+          return {
+            label: this.getEntityTypeTitle(entityType),
+            value: 'custom-entities',
+            params: { entity_type: entityType.toLowerCase() },
+            query: { search: '' }
+          }
+        }
+      }).filter(item => item)
+      console.log(customOptions)
+      options = options.concat(customOptions)
+      console.log(options)
 
       options = options.concat([
         { label: this.$t('sequences.title'), value: 'sequences' },

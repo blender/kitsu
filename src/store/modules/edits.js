@@ -594,37 +594,6 @@ const actions = {
     return editsApi.loadEditHistory(editId)
   },
 
-  getPersonEdits (
-    { commit, state, rootGetters },
-    { taskTypeId, detailLevel, personId, year, month, week, day }
-  ) {
-    const taskStatusMap = rootGetters.taskStatusMap
-    const dateString = helpers.getDateFromParameters({
-      detailLevel, year, month, week, day
-    })
-
-    const edits = cache.edits.filter((edit) => {
-      const task = rootGetters.taskMap.get(edit.validations.get(taskTypeId))
-      if (task) {
-        const taskStatus = taskStatusMap.get(task.task_status_id)
-        const endDateString = helpers.getTaskEndDate(task, detailLevel)
-        return (
-          task &&
-          taskStatus.is_done &&
-          task.assignees.includes(personId) &&
-          endDateString === dateString
-        )
-      } else {
-        return false
-      }
-    })
-      .map(edit => ({
-        ...edit,
-        full_name: helpers.getEditName(edit)
-      }))
-    return Promise.resolve(edits)
-  },
-
   deleteAllEditTasks (
     { commit, dispatch, state }, { projectId, taskTypeId, selectionOnly }
   ) {

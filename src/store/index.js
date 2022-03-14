@@ -10,6 +10,7 @@ import breakdown from './modules/breakdown'
 import customActions from './modules/customactions'
 import departments from './modules/departments'
 import edits from './modules/edits'
+import entities from './modules/entities'
 import login from './modules/login'
 import main from './modules/main'
 import news from './modules/news'
@@ -34,6 +35,7 @@ const modules = {
   customActions,
   departments,
   edits,
+  entities,
   login,
   main,
   people,

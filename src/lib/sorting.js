@@ -18,8 +18,16 @@ export const sortShots = (shots) => {
   )
 }
 
-export const sortEdits = (shots) => {
-  return shots.sort(
+export const sortEdits = (edits) => {
+  return edits.sort(
+    firstBy('canceled')
+      .thenBy(sortByEpisode)
+      .thenBy((a, b) => a.name.localeCompare(b.name))
+  )
+}
+
+export const sortEntities = (entities) => {
+  return entities.sort(
     firstBy('canceled')
       .thenBy(sortByEpisode)
       .thenBy((a, b) => a.name.localeCompare(b.name))
@@ -191,11 +199,11 @@ export const sortAssetResult = (
 ) => {
   if (sorting && sorting.length > 0) {
     const sortInfo = sorting[0]
-    let sortEntities = sortByTaskType(taskMap, sortInfo)
-    if (sortInfo.type === 'metadata') sortEntities = sortByMetadata(sortInfo)
+    let sortByTaskTypeOrMetadata = sortByTaskType(taskMap, sortInfo)
+    if (sortInfo.type === 'metadata') sortByTaskTypeOrMetadata = sortByMetadata(sortInfo)
     result = result.sort(
       firstBy('canceled')
-        .thenBy(sortEntities)
+        .thenBy(sortByTaskTypeOrMetadata)
         .thenBy((a, b) => a.asset_type_name.localeCompare(b.asset_type_name))
         .thenBy((a, b) => a.name.localeCompare(b.name))
     )
@@ -213,11 +221,11 @@ export const sortShotResult = (
 ) => {
   if (sorting && sorting.length > 0) {
     const sortInfo = sorting[0]
-    let sortEntities = sortByTaskType(taskMap, sortInfo)
-    if (sortInfo.type === 'metadata') sortEntities = sortByMetadata(sortInfo)
+    let sortByTaskTypeOrMetadata = sortByTaskType(taskMap, sortInfo)
+    if (sortInfo.type === 'metadata') sortByTaskTypeOrMetadata = sortByMetadata(sortInfo)
     result = result.sort(
       firstBy('canceled')
-        .thenBy(sortEntities)
+        .thenBy(sortByTaskTypeOrMetadata)
         .thenBy(sortByEpisode)
         .thenBy((a, b) => a.sequence_name.localeCompare(b.sequence_name))
         .thenBy((a, b) => a.name.localeCompare(b.name))
@@ -236,16 +244,38 @@ export const sortEditResult = (
 ) => {
   if (sorting && sorting.length > 0) {
     const sortInfo = sorting[0]
-    let sortEntities = sortByTaskType(taskMap, sortInfo)
-    if (sortInfo.type === 'metadata') sortEntities = sortByMetadata(sortInfo)
+    let sortByTaskTypeOrMetadata = sortByTaskType(taskMap, sortInfo)
+    if (sortInfo.type === 'metadata') sortByTaskTypeOrMetadata = sortByMetadata(sortInfo)
     result = result.sort(
       firstBy('canceled')
-        .thenBy(sortEntities)
+        .thenBy(sortByTaskTypeOrMetadata)
         .thenBy(sortByEpisode)
         .thenBy((a, b) => a.name.localeCompare(b.name))
     )
   } else {
     result = sortEdits(result)
+  }
+  return result
+}
+
+export const sortEntityResult = (
+  result,
+  sorting,
+  taskTypeMap,
+  taskMap
+) => {
+  if (sorting && sorting.length > 0) {
+    const sortInfo = sorting[0]
+    let sortByTaskTypeOrMetadata = sortByTaskType(taskMap, sortInfo)
+    if (sortInfo.type === 'metadata') sortByTaskTypeOrMetadata = sortByMetadata(sortInfo)
+    result = result.sort(
+      firstBy('canceled')
+        .thenBy(sortByTaskTypeOrMetadata)
+        .thenBy(sortByEpisode)
+        .thenBy((a, b) => a.name.localeCompare(b.name))
+    )
+  } else {
+    result = sortEntities(result)
   }
   return result
 }

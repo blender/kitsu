@@ -143,15 +143,9 @@ export default {
     // this.resetDisplayedTaskTypes()
     if (this.currentProduction) {
       this.episode_span = this.currentProduction.episode_span
-      this.loadEntityTypes()
+      this.loadAllScheduleItems(this.currentProduction)
         .then(() => {
-          this.loadAllScheduleItems(this.currentProduction)
-            .then(() => {
-              this.resetDisplayedTaskTypes()
-            })
-        })
-        .catch((err) => {
-          console.error(err)
+          this.resetDisplayedTaskTypes()
         })
     }
   },
@@ -187,7 +181,6 @@ export default {
       'editTaskTypeLink',
       'loadAllScheduleItems',
       'loadContext',
-      'loadEntityTypes',
       'removeTaskTypeFromProduction',
       'saveScheduleItem'
     ]),
